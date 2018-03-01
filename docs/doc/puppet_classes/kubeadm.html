@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Puppet Class: kubeadm
+  
+    &mdash; Documentation by YARD 0.9.12
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "puppet_classes::kubeadm";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../puppet_class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (k)</a> &raquo;
+    <span class='title'><span class='object_link'>Puppet Classes</span></span>
+     &raquo; 
+    <span class="title">kubeadm</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="puppet_class_list_link"
+        href="../puppet_class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Puppet Class: kubeadm</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd><span class='object_link'><a href="kubeadm_3A_3Aparams.html" title="puppet_classes::kubeadm::params (puppet_class)">kubeadm::params</a></span></dd>
+  </dl>
+  
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>
+      manifests/init.pp
+    </dd>
+  </dl>
+</div>
+
+  <h2>Summary</h2>
+  Init class for installing, managing and configuring kubeadm
+
+<h2>Overview</h2>
+<div class="docstring">
+  <div class="discussion">
+    
+<h1 id="label-Class-3A+kubeadm">Class: kubeadm</h1>
+
+<h2 id="label-Parameters">Parameters</h2>
+
+<h2 id="label-Authors">Authors</h2>
+
+<p>Lee Briggs <a href="mailto:lbriggs@apptio.com">lbriggs@apptio.com</a></p>
+
+<h2 id="label-Copyright">Copyright</h2>
+
+<p>Copyright 2018 Lee Briggs, unless otherwise noted.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>config_dir</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::config_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Directory to place kubeadm configuration files in.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_defaults</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::config_defaults</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Configuration defaults hash. Gets merged with config_hash.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>config_hash</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::config_hash</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Use this to populate the JSON config file for kubeadm.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>manage_repos</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::manage_repos</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Whether to install and manage the public kubernetes repos</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_ensure</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::package_ensure</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Only valid when the install_method == package. Defaults to
+<code>latest</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>package_name</span>
+      
+      
+        <span class='type'>(<tt>Any</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::package_name</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Only valid when the install_method == package. Defaults to
+<code>kubeadm</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pretty_config</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::pretty_config</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Generates a human readable JSON config file. Defaults to <code>true</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>pretty_config_indent</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::pretty_config_indent</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Toggle indentation for human readable JSON file. Defaults to
+<code>4</code>.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>purge_config_dir</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>$kubeadm::params::purge_config_dir</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>Purge config files no longer generated by Puppet</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><div class="method_details_list">
+  <table class="source_code">
+    <tr>
+      <td>
+        <pre class="lines">
+
+
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63</pre>
+      </td>
+      <td>
+        <pre class="code"><span class="info file"># File 'manifests/init.pp', line 37</span>
+
+class kubeadm (
+  $config_dir                                = $kubeadm::params::config_dir,
+  Hash $config_defaults                      = $kubeadm::params::config_defaults,
+  Hash $config_hash                          = $kubeadm::params::config_hash,
+  Boolean $manage_repos                      = $kubeadm::params::manage_repos,
+  $package_ensure                            = $kubeadm::params::package_ensure,
+  $package_name                              = $kubeadm::params::package_name,
+  Boolean $pretty_config                     = $kubeadm::params::pretty_config,
+  Integer $pretty_config_indent              = $kubeadm::params::pretty_config_indent,
+  Boolean $purge_config_dir                  = $kubeadm::params::purge_config_dir,
+) inherits kubeadm::params {
+
+
+  $config_hash_real = deep_merge($config_defaults, $config_hash)
+
+  anchor { &#39;kubeadm_first&#39;: }
+  -&gt; class { &#39;kubeadm::repos&#39;:
+    manage_repos =&gt; $manage_repos,
+  }
+  -&gt; class { &#39;kubeadm::install&#39;: }
+  -&gt; class { &#39;kubeadm::configure&#39;:
+    config_hash =&gt; $config_hash_real,
+    purge       =&gt; $purge_config_dir,
+  }
+  -&gt; anchor { &#39;kubeadm_last&#39;: }
+
+}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+      <div id="footer">
+     Generated by <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>.
+</div>
+
+    </div>
+  </body>
+</html>
