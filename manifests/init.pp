@@ -12,6 +12,8 @@
 #
 # @param config_hash Use this to populate the JSON config file for kubeadm.
 #
+# @param manage_repos Whether to install and manage the public kubernetes repos
+#
 # @param package_ensure Only valid when the install_method == package. Defaults to `latest`.
 #
 # @param package_name Only valid when the install_method == package. Defaults to `kubeadm`.
@@ -36,6 +38,7 @@ class kubeadm (
   $config_dir                                = $kubeadm::params::config_dir,
   Hash $config_defaults                      = $kubeadm::params::config_defaults,
   Hash $config_hash                          = $kubeadm::params::config_hash,
+  Boolean $manage_repos                      = $kubeadm::params::manage_repos,
   $package_ensure                            = $kubeadm::params::package_ensure,
   $package_name                              = $kubeadm::params::package_name,
   Boolean $pretty_config                     = $kubeadm::params::pretty_config,
@@ -47,8 +50,11 @@ class kubeadm (
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 
   anchor { 'kubeadm_first': }
+  -> class { 'kubeadm::repos':
+    manage_repos => $manage_repos,
+  }
   -> class { 'kubeadm::install': }
-  -> class { 'kubeadm::configure': 
+  -> class { 'kubeadm::configure':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }

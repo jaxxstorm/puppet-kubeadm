@@ -33,5 +33,13 @@ describe 'kubeadm' do
     it { should contain_file('kubeadm config.json').with(:ensure => 'present', :path => '/opt/kubeadm/config.json').that_requires('File[/opt/kubeadm]') }
   end
 
+  context 'install yum repos' do
+    it { should contain_yumrepo('kubernetes') }
+  end
+
+  context 'dont manage repos' do
+    let(:params) {{ 'manage_repos' => false }}
+    it { should_not contain_yumrepo('kubernetes') }
+  end
 
 end

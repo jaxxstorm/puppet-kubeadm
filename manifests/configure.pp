@@ -13,7 +13,7 @@ class kubeadm::configure(
   $purge = true,
 ) {
 
-	file { $kubeadm::config_dir:
+  file { $kubeadm::config_dir:
     ensure  => directory,
     purge   => $purge,
     recurse => $purge,
@@ -23,7 +23,7 @@ class kubeadm::configure(
     path    => "${kubeadm::config_dir}/config.json",
     content => kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
     require => File[$::kubeadm::config_dir],
-  }	
+  }
 
 
 }

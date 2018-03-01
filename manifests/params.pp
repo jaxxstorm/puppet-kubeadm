@@ -8,6 +8,7 @@ class kubeadm::params {
   $config_dir            = '/etc/kubeadm'
   $config_defaults       = {}
   $config_hash           = {}
+  $manage_repos          = true
   $package_ensure        = 'latest'
   $package_name          = 'kubeadm'
   $pretty_config         = true
