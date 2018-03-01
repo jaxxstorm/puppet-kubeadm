@@ -1,0 +1,5 @@
+manifests/init.pp d97e18ce6edb0ab60b84299b8635603459a180b8
+manifests/params.pp 68f16c88f8bbe5eccd104ca32a1ea9782f15cdbe
+manifests/install.pp 43d8cf75dc9eedf15a97af231ec116e2f6fe7ded
+manifests/configure.pp 7ffd7f99cdaef51dd83967cf2ba8ae44df4f730c
+lib/puppet/parser/functions/kubeadm_sorted_json.rb 6011321768f3606f16ca2a7fe1aa2f9e1f1385b6
