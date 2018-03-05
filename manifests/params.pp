@@ -6,7 +6,7 @@
 class kubeadm::params {
 
   $config_dir            = '/etc/kubeadm'
-  $config_defaults       = {}
+  $config_defaults       = { 'kind' => 'MasterConfiguration', 'apiVersion' => 'kubeadm.k8s.io/v1alpha1' }
   $config_hash           = {}
   $manage_repos          = true
   $package_ensure        = 'latest'
