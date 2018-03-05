@@ -42,4 +42,18 @@ describe 'kubeadm' do
     it { should_not contain_yumrepo('kubernetes') }
   end
 
+  context 'simple_config' do
+    let(:params) {{ 
+      'config_hash' => { 
+        'api' => {'advertiseAddress' => '0.0.0.0' }, 
+        'etcd' =>  { 'endpoints' => ['https://etcd-1:2379'] },
+        'kubernetesVersion' => 'v1.8.4',
+      }, 
+      'pretty_config_indent' => 3,
+    }}
+    expected = File.read('spec/classes/expected/simple.json')
+    it { should contain_file('kubeadm config.json').with(:content => expected) }
+
+  end
+
 end

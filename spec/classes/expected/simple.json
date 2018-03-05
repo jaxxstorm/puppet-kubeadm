@@ -1,0 +1,13 @@
+{
+   "api": {
+      "advertiseAddress": "0.0.0.0"
+   },
+   "apiVersion": "kubeadm.k8s.io/v1alpha1",
+   "etcd": {
+      "endpoints": [
+         "https://etcd-1:2379"
+      ]
+   },
+   "kind": "MasterConfiguration",
+   "kubernetesVersion": "v1.8.4"
+}
