@@ -20,7 +20,7 @@ It allows you to generate kubeadm configuration, and then manage and run kubeadm
 
 ## Setup
 
-### What kubeadm affects **OPTIONAL**
+### What kubeadm affects
 
 This module will:
 
