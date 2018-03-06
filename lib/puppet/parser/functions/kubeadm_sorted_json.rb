@@ -36,17 +36,6 @@ module JSON
         when Array
           arrayRet = []
 
-          # We need to increase the loop count before #each so the objects inside are indented twice.
-          # When we come out of #each we decrease the loop count so the closing brace lines up properly.
-          #
-          # If you start with @@loop = 1, the count will be as follows
-          #
-          # "start_join": [     <-- @@loop == 1
-          #   "192.168.50.20",  <-- @@loop == 2
-          #   "192.168.50.21",  <-- @@loop == 2
-          #   "192.168.50.22"   <-- @@loop == 2
-          # ] <-- closing brace <-- @@loop == 1
-          #
           @@loop += 1
           obj.each do |a|
             arrayRet.push(sorted_pretty_generate(a, indent_len))
@@ -79,6 +68,8 @@ module JSON
           'null'
         when Integer, Float, TrueClass, FalseClass
           "#{obj}"
+        when String
+          obj.to_json
         else
           # Should be a string
           # keep string integers unquoted
