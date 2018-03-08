@@ -35,6 +35,7 @@
 # Copyright 2018 Lee Briggs, unless otherwise noted.
 #
 class kubeadm (
+  $bootstrap_master                          = undef, # required parameter
   $config_dir                                = $kubeadm::params::config_dir,
   Hash $config_defaults                      = $kubeadm::params::config_defaults,
   Hash $config_hash                          = $kubeadm::params::config_hash,
@@ -47,7 +48,12 @@ class kubeadm (
 ) inherits kubeadm::params {
 
 
+  if !$bootstrap_master {
+    fail('kubeadm::init: Must specify a bootstrap master - it should be set to a hostname of a single cluster master')
+  }
+
   $config_hash_real = deep_merge($config_defaults, $config_hash)
+
 
   anchor { 'kubeadm_first': }
   -> class { 'kubeadm::repos':
@@ -58,6 +64,7 @@ class kubeadm (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }
+  -> class { 'kubeadm::kubeadm_init': }
   -> anchor { 'kubeadm_last': }
 
 }
