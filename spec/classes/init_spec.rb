@@ -45,25 +45,5 @@ describe 'kubeadm' do
     it { should_not contain_yumrepo('kubernetes') }
   end
 
-  context 'simple_config' do
-    let(:params) {{ 
-      'bootstrap_master' => 'host',
-      'config_hash' => { 
-        'api' => {'advertiseAddress' => '0.0.0.0' }, 
-        'etcd' =>  { 'endpoints' => ['https://etcd-1:2379'] },
-        'kubernetesVersion' => 'v1.8.4',
-        'apiserver-count' => '3',
-        'integer' => '10',       
-      }, 
-      'pretty_config_indent' => 3,
-    }}
-    expected = File.read('spec/classes/expected/simple.json')
-    it { should contain_file('kubeadm config.json').with(:content => expected) }
-    it { should contain_exec('kubeadm init').with(:command => 'kubeadm init --config /etc/kubeadm/config.json',
-                                                  :path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
-                                                  :creates => '/etc/kubernetes/admin.conf') }
-
-  end
-
 
 end
