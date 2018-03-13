@@ -31,10 +31,12 @@ This module will:
 
 ### Beginning with kubeadm
 
-To just install kubeadm, a simple:
+Because kubeadm's init command isn't idempotent, we need to specify a single master to run the init command. To get started, do this:
 
 ```
-include ::kubeadm
+class { '::kubeadm':
+  bootstrap_master => 'kube-master-1',
+}
 ```
 
 Will get you going
