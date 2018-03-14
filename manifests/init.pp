@@ -71,6 +71,7 @@ class kubeadm (
     master           => $master,
     bootstrap_master => $bootstrap_master,
   }
+  -> class { 'kubeadm::node': }
   -> anchor { 'kubeadm_last': }
 
 }
