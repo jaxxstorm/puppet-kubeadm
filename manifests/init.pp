@@ -14,6 +14,8 @@
 #
 # @param manage_repos Whether to install and manage the public kubernetes repos
 #
+# @param master Whether to install the master components, or run kubeadm join
+#
 # @param package_ensure Only valid when the install_method == package. Defaults to `latest`.
 #
 # @param package_name Only valid when the install_method == package. Defaults to `kubeadm`.
@@ -40,6 +42,7 @@ class kubeadm (
   Hash $config_defaults                      = $kubeadm::params::config_defaults,
   Hash $config_hash                          = $kubeadm::params::config_hash,
   Boolean $manage_repos                      = $kubeadm::params::manage_repos,
+  Boolean $master                            = $kubeadm::params::master,
   $package_ensure                            = $kubeadm::params::package_ensure,
   $package_name                              = $kubeadm::params::package_name,
   Boolean $pretty_config                     = $kubeadm::params::pretty_config,
@@ -64,7 +67,10 @@ class kubeadm (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }
-  -> class { 'kubeadm::kubeadm_init': }
+  -> class { 'kubeadm::master':
+    master           => $master,
+    bootstrap_master => $bootstrap_master,
+  }
   -> anchor { 'kubeadm_last': }
 
 }
