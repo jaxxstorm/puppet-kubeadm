@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Puppet Class: kubeadm::configure
+  Puppet Class: kubeadm::repos
   
     &mdash; Documentation by YARD 0.9.12
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_classes::kubeadm::configure";
+  pathId = "puppet_classes::kubeadm::repos";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (k)</a> &raquo;
     <span class='title'><span class='object_link'>Puppet Classes</span></span>
      &raquo; 
-    <span class="title">kubeadm::configure</span>
+    <span class="title">kubeadm::repos</span>
   
 </div>
 
@@ -59,28 +59,26 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Puppet Class: kubeadm::configure</h1>
+      <div id="content"><h1>Puppet Class: kubeadm::repos</h1>
 <div class="box_info">
   
   
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      manifests/configure.pp
+      manifests/repos.pp
     </dd>
   </dl>
 </div>
 
   <h2>Summary</h2>
-  This class is called from kubeadm::init to install the config file.
+  This installs the public kubernetes repos
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
     
-<p>== Class kubeadm::configure</p>
-
-<p>== Parameters</p>
+<p>== Class kubeadm::repos</p>
 
   </div>
 </div>
@@ -90,35 +88,12 @@
   
     <li>
       
-        <span class='name'>config_hash</span>
+        <span class='name'>manage_repos</span>
       
       
         <span class='type'>(<tt>Any</tt>)</span>
       
       
-      
-        &mdash;
-        <div class='inline'>
-<p>Hash for kubeadm to be deployed as JSON</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>purge</span>
-      
-      
-        <span class='type'>(<tt>Any</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>If set will make puppet remove stale config files.</p>
-</div>
       
     </li>
   
@@ -132,6 +107,12 @@
         <pre class="lines">
 
 
+5
+6
+7
+8
+9
+10
 11
 12
 13
@@ -150,26 +131,42 @@
 26
 27
 28
-29</pre>
+29
+30
+31
+32
+33
+34</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/configure.pp', line 11</span>
+        <pre class="code"><span class="info file"># File 'manifests/repos.pp', line 5</span>
 
-class kubeadm::configure(
-  $config_hash,
-  $purge = true,
-) {
+class kubeadm::repos (
+  $manage_repos
+){
 
-  file { $kubeadm::config_dir:
-    ensure  =&gt; directory,
-    purge   =&gt; $purge,
-    recurse =&gt; $purge,
-  }
-  -&gt; file { &#39;kubeadm config.json&#39;:
-    ensure  =&gt; present,
-    path    =&gt; &quot;${kubeadm::config_dir}/config.json&quot;,
-    content =&gt; kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
-    require =&gt; File[$::kubeadm::config_dir],
+  if $manage_repos {
+    case $::osfamily {
+      &#39;RedHat&#39;: {
+        yumrepo { &#39;kubernetes&#39;:
+          descr   =&gt; &#39;kubernetes-public-repo&#39;,
+          baseurl =&gt; &#39;https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64&#39;,
+          gpgkey  =&gt; &#39;https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg&#39;,
+        }
+      }
+      &#39;Debian&#39;: {
+        apt::source { &#39;kubernetes&#39;:
+          location =&gt; &#39;http://apt.kubernetes.io&#39;,
+          repos    =&gt; &#39;main&#39;,
+          release  =&gt; &#39;kubernetes-xenial&#39;,
+          key      =&gt; {
+            &#39;id&#39;     =&gt; &#39;D0BC747FD8CAF7117500D6FA3746C208A7317B0F&#39;,
+            &#39;source&#39; =&gt; &#39;https://packages.cloud.google.com/apt/doc/apt-key.gpg&#39;,
+          },
+        }
+      }
+      default: { notify {&quot;The OS family ${::os_family} is not supported by this module&quot;:} }
+    }
   }
 
 

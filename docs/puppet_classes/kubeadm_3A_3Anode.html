@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Puppet Class: kubeadm::configure
+  Puppet Class: kubeadm::node
   
     &mdash; Documentation by YARD 0.9.12
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_classes::kubeadm::configure";
+  pathId = "puppet_classes::kubeadm::node";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (k)</a> &raquo;
     <span class='title'><span class='object_link'>Puppet Classes</span></span>
      &raquo; 
-    <span class="title">kubeadm::configure</span>
+    <span class="title">kubeadm::node</span>
   
 </div>
 
@@ -59,71 +59,31 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Puppet Class: kubeadm::configure</h1>
+      <div id="content"><h1>Puppet Class: kubeadm::node</h1>
 <div class="box_info">
   
   
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      manifests/configure.pp
+      manifests/node.pp
     </dd>
   </dl>
 </div>
 
   <h2>Summary</h2>
-  This class is called from kubeadm::init to install the config file.
+  This manages and configures kubernetes nodes with kubeadm
 
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
     
-<p>== Class kubeadm::configure</p>
-
-<p>== Parameters</p>
+<p>== Class kubeadm::node</p>
 
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>config_hash</span>
-      
-      
-        <span class='type'>(<tt>Any</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>Hash for kubeadm to be deployed as JSON</p>
-</div>
-      
-    </li>
-  
-    <li>
-      
-        <span class='name'>purge</span>
-      
-      
-        <span class='type'>(<tt>Any</tt>)</span>
-      
-      
-        <em class="default">(defaults to: <tt>true</tt>)</em>
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>If set will make puppet remove stale config files.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 
 </div><div class="method_details_list">
   <table class="source_code">
@@ -132,47 +92,31 @@
         <pre class="lines">
 
 
+5
+6
+7
+8
+9
+10
 11
 12
 13
 14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29</pre>
+15</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/configure.pp', line 11</span>
+        <pre class="code"><span class="info file"># File 'manifests/node.pp', line 5</span>
 
-class kubeadm::configure(
-  $config_hash,
-  $purge = true,
-) {
+class kubeadm::node {
 
-  file { $kubeadm::config_dir:
-    ensure  =&gt; directory,
-    purge   =&gt; $purge,
-    recurse =&gt; $purge,
+  # if the bootstrapped fact isn&#39;t set
+  # join the cluster
+  if ! $::kubeadm_bootstrapped {
+    exec { &#39;kubeadm join&#39;:
+      command =&gt; &quot;kubeadm join --config ${kubeadm::config_dir}/config.json&quot;,
+      path    =&gt; &#39;/usr/bin:/usr/local/bin:/usr/sbin:/sbin&#39;,
+    }
   }
-  -&gt; file { &#39;kubeadm config.json&#39;:
-    ensure  =&gt; present,
-    path    =&gt; &quot;${kubeadm::config_dir}/config.json&quot;,
-    content =&gt; kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
-    require =&gt; File[$::kubeadm::config_dir],
-  }
-
-
 }</pre>
       </td>
     </tr>
