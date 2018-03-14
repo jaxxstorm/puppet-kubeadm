@@ -48,7 +48,7 @@ describe 'kubeadm' do
   context 'master configuration' do
     let(:facts)  {{ 'bootstrapped' => true }}
     let(:params) {{ 'master' => true, 'bootstrap_master' =>'test' }}
-    it { should contain_exec('kubeadm controlplane').with(:command => 'kubeadm alpha phase controlplane all --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :subscribe => 'File[kubeadm config.json]') }
+    it { should contain_exec('kubeadm controlplane').with(:command => 'kubeadm alpha phase controlplane all --config /etc/kubeadm/config.json && sleep 10', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :subscribe => 'File[kubeadm config.json]') }
     it { should contain_exec('kubeadm kubeconfig').with(:command => 'kubeadm alpha phase kubeconfig --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :creates => [ '/etc/kubernetes/admin.conf', '/etc/kubernetes/kubelet.conf' ]) }
 
   end

@@ -11,7 +11,7 @@ class kubeadm::master (
     # if we are a master, install the components we need to update the controlplane
     # every time the config file changes
     exec { 'kubeadm controlplane':
-      command     => "kubeadm alpha phase controlplane all --config ${kubeadm::config_dir}/config.json",
+      command     => "kubeadm alpha phase controlplane all --config ${kubeadm::config_dir}/config.json && sleep 10", # this is to ensure the controlplane returns
       path        => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
       subscribe   => File['kubeadm config.json'],
       require     => Package['kubeadm'],
