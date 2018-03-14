@@ -15,6 +15,7 @@ class kubeadm::params {
   $pretty_config         = true
   $pretty_config_indent  = 4
   $purge_config_dir      = true
+  $refresh_controlplane  = true
 
 
 }

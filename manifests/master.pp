@@ -3,9 +3,15 @@
 # @summary This manages and configures kubernetes masters with kubeadm
 #
 class kubeadm::master (
-  $master,
   $bootstrap_master,
+  $master,
+  $refresh_controlplane,
 ){
+
+  $subscribe = $refresh_controlplane ? {
+    true    => File['kubeadm config.json'],
+    default => undef,
+  }
 
   if $master {
     # if we are a master, install the components we need to update the controlplane
@@ -13,9 +19,9 @@ class kubeadm::master (
     exec { 'kubeadm controlplane':
       command     => "kubeadm alpha phase controlplane all --config ${kubeadm::config_dir}/config.json && sleep 10", # this is to ensure the controlplane returns
       path        => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
-      subscribe   => File['kubeadm config.json'],
+      subscribe   => $subscribe,
       require     => Package['kubeadm'],
-      refreshonly => true,
+      refreshonly => $refresh_controlplane,
     }
     -> exec { 'kubeadm kubeconfig':
       command => "kubeadm alpha phase kubeconfig --config ${kubeadm::config_dir}/config.json",
