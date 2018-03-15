@@ -93,11 +93,11 @@ class kubeadm (
     manage_repos => $manage_repos,
   }
   -> class { 'kubeadm::install': }
-  -> class { 'kubeadm::service': }
   -> class { 'kubeadm::configure':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }
+  -> class { 'kubeadm::service': }
   -> class { 'kubeadm::master':
     master               => $master,
     bootstrap_master     => $bootstrap_master,
