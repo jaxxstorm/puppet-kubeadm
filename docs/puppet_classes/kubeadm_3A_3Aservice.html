@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Puppet Class: kubeadm::install
+  Puppet Class: kubeadm::service
   
     &mdash; Documentation by YARD 0.9.12
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "puppet_classes::kubeadm::install";
+  pathId = "puppet_classes::kubeadm::service";
   relpath = '../';
 </script>
 
@@ -39,7 +39,7 @@
     <a href="../_index.html">Index (k)</a> &raquo;
     <span class='title'><span class='object_link'>Puppet Classes</span></span>
      &raquo; 
-    <span class="title">kubeadm::install</span>
+    <span class="title">kubeadm::service</span>
   
 </div>
 
@@ -59,14 +59,14 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Puppet Class: kubeadm::install</h1>
+      <div id="content"><h1>Puppet Class: kubeadm::service</h1>
 <div class="box_info">
   
   
   <dl>
     <dt>Defined in:</dt>
     <dd>
-      manifests/install.pp
+      manifests/service.pp
     </dd>
   </dl>
 </div>
@@ -75,9 +75,9 @@
 <div class="docstring">
   <div class="discussion">
     
-<p>=== Class kubeadm::install</p>
+<p>=== Class kubeadm::service</p>
 
-<p>Installs kubeadm based on parameters passed</p>
+<p>Manage the service for the kubelet</p>
 
   </div>
 </div>
@@ -101,36 +101,20 @@
 12
 13
 14
-15
-16
-17
-18
-19
-20
-21
-22
-23</pre>
+15</pre>
       </td>
       <td>
-        <pre class="code"><span class="info file"># File 'manifests/install.pp', line 5</span>
+        <pre class="code"><span class="info file"># File 'manifests/service.pp', line 5</span>
 
-class kubeadm::install {
-
-  package { $kubeadm::package_name:
-    ensure =&gt; $kubeadm::package_ensure,
-  }
+class kubeadm::service {
 
   if $kubeadm::manage_kubelet {
-    package { $kubeadm::kubelet_package_name:
-      ensure =&gt; $kubeadm::kubelet_package_ensure,
+    service { $kubeadm::kubelet_service_name:
+      ensure =&gt; $kubeadm::kubelet_service_ensure,
+      enable =&gt; $kubeadm::kubelet_service_enable,
     }
   }
 
-  if $kubeadm::manage_kubectl {
-    package { $kubeadm::kubectl_package_name:
-      ensure =&gt; $kubeadm::kubectl_package_ensure,
-    }
-  }
 
 }</pre>
       </td>

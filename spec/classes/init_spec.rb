@@ -19,17 +19,32 @@ describe 'kubeadm' do
     it { should_not compile } # by default, we need to specify a bootstrap master
   end
 
-  context 'should install kubeadm' do
+  context 'should install packages' do
     let(:params) {{ 'bootstrap_master' => 'host' }}
     it { should contain_package('kubeadm').with(:ensure => 'latest') }
+    it { should contain_package('kubectl').with(:ensure => 'latest') }
+    it { should contain_package('kubelet').with(:ensure => 'latest') }
+  end
+
+  context 'should contain service' do
+    let(:params) {{ 'bootstrap_master' => 'host' }}
+    it { should contain_service('kubelet').with(:ensure => true, :enable => true ) }
+  end
+
+  context 'manage service param' do
+    let(:params) {{ 'bootstrap_master' => 'host', 'manage_kubelet' => false, 'manage_kubectl' => false, }}
+    it { should_not contain_service('kubelet') }
+    it { should_not contain_package('kubelet') }
+    it { should_not contain_package('kubectl') }
+    it { should contain_file('kubeadm config.json').with(:ensure => 'present', :path => '/etc/kubeadm/config.json', :notify => nil).that_requires('File[/etc/kubeadm]') }
   end
 
   context 'should manage config' do
     let(:params) {{ 'bootstrap_master' => 'host' }}
     it { should contain_file('/etc/kubeadm').with(:ensure => 'directory') }
-    it { should contain_file('kubeadm config.json').with(:ensure => 'present', :path => '/etc/kubeadm/config.json').that_requires('File[/etc/kubeadm]') }
+    it { should contain_file('kubeadm config.json').with(:ensure => 'present', :path => '/etc/kubeadm/config.json', :notify => 'Service[kubelet]').that_requires('File[/etc/kubeadm]') }
   end
-
+  
   context 'custom config dir' do
     let(:params) {{ 'config_dir' => '/opt/kubeadm', 'bootstrap_master' => 'host' }}
     it { should contain_file('/opt/kubeadm').with(:ensure => 'directory') }
