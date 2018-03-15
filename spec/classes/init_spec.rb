@@ -54,10 +54,11 @@ describe 'kubeadm' do
   end
 
   context 'master config, don\'t refresh' do
-    let(:facts)  {{ 'kubeadm_bootstrapped' => true }}
-    let(:params) {{ 'master' => true, 'bootstrap_master' =>'test', 'refresh_controlplane' => false }}
+    let(:facts)  {{ 'kubeadm_bootstrapped' => true, 'fqdn' => 'master-1' }}
+    let(:params) {{ 'master' => true, 'bootstrap_master' =>'master-1', 'refresh_controlplane' => false }}
     it { should contain_exec('kubeadm controlplane').with(:command => 'kubeadm alpha phase controlplane all --config /etc/kubeadm/config.json && sleep 10', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :refreshonly => false) }
     it { should contain_exec('kubeadm kubeconfig').with(:command => 'kubeadm alpha phase kubeconfig --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :creates => [ '/etc/kubernetes/admin.conf', '/etc/kubernetes/kubelet.conf' ]) }
+    it { should_not contain_exec('kubeadm init') }
   end
 
   context 'node configuration' do
@@ -70,6 +71,13 @@ describe 'kubeadm' do
     let(:facts) {{ 'kubeadm_bootstrapped' => true }}
     let(:params) {{ 'master' => false, 'bootstrap_master' => 'test' }}
     it { should_not contain_exec('kubeadm join').with(:command => 'kubeadm join --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin') }
+  end
+
+  context 'when not bootstrapped, and we\'re the bootstrap master' do
+    let(:facts) {{ 'kubeadm_bootstrapped' => false, 'fqdn' => 'master-1' }}
+    let(:params) {{ 'master' => true, 'bootstrap_master' =>'master-1' }}
+    it { should contain_exec('kubeadm init').with(:command => 'kubeadm init --config /etc/kubeadm/config.json && touch /etc/kubeadm/.bootstrapped', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :creates => '/etc/kubeadm/.bootstrapped') }
+
   end
 
 end

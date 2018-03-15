@@ -14,6 +14,16 @@ class kubeadm::master (
   }
 
   if $master {
+
+    if ! $::kubeadm_bootstrapped and $bootstrap_master == $::fqdn {
+      exec { 'kubeadm init':
+        command => "kubeadm init --config ${kubeadm::config_dir}/config.json && touch ${kubeadm::config_dir}/.bootstrapped",
+        path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
+        require => Package['kubeadm'],
+        creates => "${kubeadm::config_dir}/.bootstrapped",
+      }
+    }
+
     # if we are a master, install the components we need to update the controlplane
     # every time the config file changes
     exec { 'kubeadm controlplane':
