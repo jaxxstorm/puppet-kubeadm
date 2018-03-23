@@ -27,8 +27,9 @@ describe 'kubeadm' do
   end
 
   context 'should contain service' do
+    let(:facts) {{ 'kubeadm_bootstrapped' => 'false' }}
     let(:params) {{ 'bootstrap_master' => 'host' }}
-    it { should contain_service('kubelet').with(:ensure => true, :enable => true ) }
+    it { should contain_service('kubelet').with(:ensure => false, :enable => true ) }
   end
 
   context 'manage service param' do
@@ -66,6 +67,7 @@ describe 'kubeadm' do
     let(:params) {{ 'master' => true, 'bootstrap_master' =>'test', 'refresh_controlplane' => true }}
     it { should contain_exec('kubeadm controlplane').with(:command => 'kubeadm alpha phase controlplane all --config /etc/kubeadm/config.json && sleep 10', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :subscribe => 'File[kubeadm config.json]', :refreshonly => true) }
     it { should contain_exec('kubeadm kubeconfig').with(:command => 'kubeadm alpha phase kubeconfig --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :creates => [ '/etc/kubernetes/admin.conf', '/etc/kubernetes/kubelet.conf' ]) }
+    it { should contain_service('kubelet').with(:ensure => true, :enable => true ) }
   end
 
   context 'master config, don\'t refresh' do
@@ -74,6 +76,7 @@ describe 'kubeadm' do
     it { should contain_exec('kubeadm controlplane').with(:command => 'kubeadm alpha phase controlplane all --config /etc/kubeadm/config.json && sleep 10', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :refreshonly => false) }
     it { should contain_exec('kubeadm kubeconfig').with(:command => 'kubeadm alpha phase kubeconfig --config /etc/kubeadm/config.json', :path => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin', :creates => [ '/etc/kubernetes/admin.conf', '/etc/kubernetes/kubelet.conf' ]) }
     it { should_not contain_exec('kubeadm init') }
+    
   end
 
   context 'node configuration' do

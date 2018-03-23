@@ -4,9 +4,16 @@
 #
 class kubeadm::service {
 
+  # if we're not bootstrapped, don't enable the kubelet service
+  # kubeadm will usually do the initial enable for us
+  $service_ensure_real = $::kubeadm_bootstrapped ? {
+    true    => $kubeadm::kubelet_service_ensure,
+    default => false,
+  }
+
   if $kubeadm::manage_kubelet {
     service { $kubeadm::kubelet_service_name:
-      ensure => $kubeadm::kubelet_service_ensure,
+      ensure => $service_ensure_real,
       enable => $kubeadm::kubelet_service_enable,
     }
   }
