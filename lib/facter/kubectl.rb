@@ -12,6 +12,8 @@ end
 
 Facter.add(:kubernetes_version) do
   confine :kernel => :linux
+  confine :has_kubectl => true
+
   kubernetes_json = Facter::Core::Execution.execute('/usr/bin/kubectl version -o json')
   kubernetes_parsed_json = JSON.parse(kubernetes_json)
 
