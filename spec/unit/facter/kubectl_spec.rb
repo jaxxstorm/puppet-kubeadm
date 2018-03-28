@@ -1,35 +1,32 @@
 require 'spec_helper'
 
-describe 'kubectl', :type => :fact do
+describe 'kubectl fact' do
 
   before :each do
     Facter.clear
-    Facter.clear_messages
   end
 
-  before(:each) do
-    Facter.fact(:kernel).stubs(:value).returns('linux')
-  end
-
-
-  expected = File.read('spec/expected/kubectl_client_server.json')
-
-  context 'kubectl installed' do
-      it 'should return nil' do
-        Facter::Core::Execution.stubs(:which).with('kubectl').returns nil
-        expect(Facter.fact(:has_kubectl).value).to eq nil
-      end
-  end
-
-    
-  context 'server and client returns' do
-    it do
-      Facter::Core::Execution.stubs(:execute).with('/usr/bin/kubectl version -o json').returns expected
-        #expect(Facter.fact(:kubernetes_version).value).to be_a(Hash)
-        expect(Facter.fact(:kubernetes_version)).to include(
-          'client' => "v1.8.4",
-          'server' => "v1.8.4"
-        )
+  context 'when on Linux' do
+    before :each do
+      Facter.fact(:kernel).expects(:value).at_least(1).returns('Linux')
     end
+
+    context 'has_kubectl fact' do
+      it 'kubectl not present' do
+        # all other calls
+        Facter::Util::Resolution.stubs('exec')
+        Facter::Util::Resolution.expects('which').with('kubectl').at_least(1).returns(false)
+        expect(Facter.value(:has_kubectl)).to be_falsey
+      end
+
+      it 'kubectl installed' do
+        # all other calls
+        Facter::Util::Resolution.stubs('exec')
+        Facter::Util::Resolution.expects('which').with('kubectl').at_least(1).returns('/usr/bin/kubectl')
+        expect(Facter.value(:has_kubectl)).to be_truthy
+      end
+    end
+
+
   end
 end

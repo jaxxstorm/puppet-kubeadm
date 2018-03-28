@@ -5,7 +5,7 @@ require 'json'
 Facter.add(:has_kubectl) do
   confine :kernel => :linux
   setcode do
-    Facter::Core::Execution.which('kubectl')
+    Facter::Util::Resolution.which('kubectl') ? true : false
   end
 end
 
