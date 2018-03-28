@@ -17,7 +17,7 @@ Facter.add(:kubeadm_version) do
   kubeadm_parsed_json = JSON.parse(kubeadm_json)
 
   setcode do
-    kubeadm_parsed_json['clientVersion']['gitVersion'],
+    kubeadm_parsed_json['clientVersion']['gitVersion']
   end
 
 end
