@@ -25,7 +25,7 @@ Facter.add(:kubernetes_version) do
 
   # if the server is installed return that
   if kubernetes_parsed_json.key?('serverVersion')
-    version.merge!({"server" => kubernetes_parsed_json['serverVersion']['gitVersion']})
+    versions.merge!({"server" => kubernetes_parsed_json['serverVersion']['gitVersion']})
   end
 
 
