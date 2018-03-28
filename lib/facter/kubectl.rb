@@ -17,10 +17,17 @@ Facter.add(:kubernetes_version) do
   kubernetes_json = Facter::Core::Execution.execute('/usr/bin/kubectl version -o json')
   kubernetes_parsed_json = JSON.parse(kubernetes_json)
 
+
+
   versions = {
     "client" => kubernetes_parsed_json['clientVersion']['gitVersion'],
-    "server" => kubernetes_parsed_json['serverVersion']['gitVersion'],
   }
+
+  # if the server is installed return that
+  if kubernetes_parsed_json.key?('serverVersion')
+    version.merge!({"server" => kubernetes_parsed_json['serverVersion']['gitVersion']})
+  end
+
 
   setcode do
     versions
