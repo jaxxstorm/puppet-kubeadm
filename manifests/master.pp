@@ -31,7 +31,7 @@ class kubeadm::master (
       path        => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
       subscribe   => $subscribe,
       require     => Package['kubeadm'],
-      refreshonly => $refresh_controlplane,
+      refreshonly => true,
     }
     -> exec { 'kubeadm kubeconfig':
       command => "kubeadm alpha phase kubeconfig --config ${kubeadm::config_dir}/config.json",
