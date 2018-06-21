@@ -34,7 +34,7 @@ class kubeadm::master (
       refreshonly => true,
     }
     -> exec { 'kubeadm kubeconfig':
-      command => "kubeadm alpha phase kubeconfig --config ${kubeadm::config_dir}/config.json",
+      command => "kubeadm alpha phase kubeconfig all --config ${kubeadm::config_dir}/config.json",
       path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
       require => Package['kubeadm'],
       creates => [ '/etc/kubernetes/admin.conf', '/etc/kubernetes/kubelet.conf' ],
