@@ -8,7 +8,7 @@ class kubeadm::service {
   # kubeadm will usually do the initial enable for us
   $service_ensure_real = $::kubeadm_bootstrapped ? {
     true    => $kubeadm::kubelet_service_ensure,
-    default => false,
+    default => 'stopped',
   }
 
   if $kubeadm::manage_kubelet {

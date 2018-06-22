@@ -12,7 +12,7 @@ class kubeadm::params {
   $kubectl_package_ensure = 'latest'
   $kubelet_package_ensure = 'latest'
   $kubelet_service_enable = true
-  $kubelet_service_ensure = true
+  $kubelet_service_ensure = 'running'
   $kubelet_service_name   = 'kubelet'
   $manage_kubectl         = true
   $manage_kubelet         = true
