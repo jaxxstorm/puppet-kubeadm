@@ -66,7 +66,7 @@ class kubeadm (
   $kubectl_package_ensure         = $kubeadm::params::kubectl_package_ensure,
   $kubelet_package_ensure         = $kubeadm::params::kubelet_package_ensure,
   Boolean $kubelet_service_enable = $kubeadm::params::kubelet_service_enable,
-  Boolean $kubelet_service_ensure = $kubeadm::params::kubelet_service_ensure,
+  $kubelet_service_ensure         = $kubeadm::params::kubelet_service_ensure,
   $kubelet_service_name           = $kubeadm::params::kubelet_service_name,
   Boolean $manage_kubectl         = $kubeadm::params::manage_kubectl,
   Boolean $manage_kubelet         = $kubeadm::params::manage_kubelet,
