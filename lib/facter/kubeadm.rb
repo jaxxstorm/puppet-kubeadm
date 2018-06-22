@@ -10,8 +10,8 @@ end
 
 
 Facter.add(:kubeadm_version) do
-    confine :kernel => :linux
-    confine :has_kubeadm => true
+  confine :kernel => :linux
+  confine :has_kubeadm => true
 
   setcode do
     kubeadm_json = Facter::Core::Execution.execute('/usr/bin/kubeadm version -o json')

@@ -57,29 +57,28 @@
 # Copyright 2018 Lee Briggs, unless otherwise noted.
 #
 class kubeadm (
-  $bootstrap_master                          = undef, # required parameter
-  $config_dir                                = $kubeadm::params::config_dir,
-  Hash $config_defaults                      = $kubeadm::params::config_defaults,
-  Hash $config_hash                          = $kubeadm::params::config_hash,
-  $kubectl_package_name                      = $kubeadm::params::kubectl_package_name,
-  $kubelet_package_name                      = $kubeadm::params::kubelet_package_name,
-  $kubectl_package_ensure                    = $kubeadm::params::kubectl_package_ensure,
-  $kubelet_package_ensure                    = $kubeadm::params::kubelet_package_ensure,
-  Boolean $kubelet_service_enable            = $kubeadm::params::kubelet_service_enable,
-  Boolean $kubelet_service_ensure            = $kubeadm::params::kubelet_service_ensure,
-  $kubelet_service_name                      = $kubeadm::params::kubelet_service_name,
-  Boolean $manage_kubectl                    = $kubeadm::params::manage_kubectl,
-  Boolean $manage_kubelet                    = $kubeadm::params::manage_kubelet,
-  Boolean $manage_repos                      = $kubeadm::params::manage_repos,
-  Boolean $master                            = $kubeadm::params::master,
-  $package_ensure                            = $kubeadm::params::package_ensure,
-  $package_name                              = $kubeadm::params::package_name,
-  Boolean $pretty_config                     = $kubeadm::params::pretty_config,
-  Integer $pretty_config_indent              = $kubeadm::params::pretty_config_indent,
-  Boolean $purge_config_dir                  = $kubeadm::params::purge_config_dir,
-  Boolean $refresh_controlplane              = $kubeadm::params::refresh_controlplane,
+  $bootstrap_master               = undef, # required parameter
+  $config_dir                     = $kubeadm::params::config_dir,
+  Hash $config_defaults           = $kubeadm::params::config_defaults,
+  Hash $config_hash               = $kubeadm::params::config_hash,
+  $kubectl_package_name           = $kubeadm::params::kubectl_package_name,
+  $kubelet_package_name           = $kubeadm::params::kubelet_package_name,
+  $kubectl_package_ensure         = $kubeadm::params::kubectl_package_ensure,
+  $kubelet_package_ensure         = $kubeadm::params::kubelet_package_ensure,
+  Boolean $kubelet_service_enable = $kubeadm::params::kubelet_service_enable,
+  Boolean $kubelet_service_ensure = $kubeadm::params::kubelet_service_ensure,
+  $kubelet_service_name           = $kubeadm::params::kubelet_service_name,
+  Boolean $manage_kubectl         = $kubeadm::params::manage_kubectl,
+  Boolean $manage_kubelet         = $kubeadm::params::manage_kubelet,
+  Boolean $manage_repos           = $kubeadm::params::manage_repos,
+  Boolean $master                 = $kubeadm::params::master,
+  $package_ensure                 = $kubeadm::params::package_ensure,
+  $package_name                   = $kubeadm::params::package_name,
+  Boolean $pretty_config          = $kubeadm::params::pretty_config,
+  Integer $pretty_config_indent   = $kubeadm::params::pretty_config_indent,
+  Boolean $purge_config_dir       = $kubeadm::params::purge_config_dir,
+  Boolean $refresh_controlplane   = $kubeadm::params::refresh_controlplane,
 ) inherits kubeadm::params {
-
 
   if !$bootstrap_master {
     fail('kubeadm::init: Must specify a bootstrap master - it should be set to a hostname of a single cluster master')
@@ -88,22 +87,35 @@ class kubeadm (
   $config_hash_real = deep_merge($config_defaults, $config_hash)
 
 
-  anchor { 'kubeadm_first': }
-  -> class { 'kubeadm::repos':
-    manage_repos => $manage_repos,
+  class {'::kubeadm::repos':
+    manage_repos => $manage_repos
   }
-  -> class { 'kubeadm::install': }
-  -> class { 'kubeadm::configure':
+  -> class {'::kubeadm::install': }
+  -> class {'::kubeadm::configure':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }
-  -> class { 'kubeadm::service': }
-  -> class { 'kubeadm::master':
-    master               => $master,
-    bootstrap_master     => $bootstrap_master,
-    refresh_controlplane => $refresh_controlplane,
+  ~> class {'::kubeadm::service': }
+
+  if $master {
+    class {'::kubeadm::master':
+      refresh_controlplane => $refresh_controlplane,
+    }
+
+    Class['kubeadm::service']
+    -> Class['kubeadm::master']
   }
-  -> class { 'kubeadm::node': }
-  -> anchor { 'kubeadm_last': }
+
+  unless $master{
+    contain ::kubeadm::node
+    Class['kubeadm::service']
+    -> Class['kubeadm::node']
+  }
+
+  contain ::kubeadm::repos
+  contain ::kubeadm::install
+  contain ::kubeadm::configure
+  contain ::kubeadm::service
+  contain ::kubeadm::master
 
 }

@@ -18,5 +18,4 @@ class kubeadm::service {
     }
   }
 
-
 }
