@@ -7,7 +7,7 @@ class kubeadm::master (
 ){
 
   exec{'kubeadm init':
-    command => "kubeadm init --config ${::kubeadm::config_dir}/config.json && touch ${::kubeadm::config_dir}/.bootstrapped",
+    command => "kubeadm init --config ${::kubeadm::config_dir}/config.json",
     path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
     creates => '/etc/kubernetes/kubelet.conf',
   }
