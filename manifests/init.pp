@@ -98,9 +98,9 @@ class kubeadm (
   -> class {'::kubeadm::service': }
 
   if $master {
-    class {'::kubeadm::master':
+    Class['::kubeadm::service']
+    -> class {'::kubeadm::master':
       refresh_controlplane => $refresh_controlplane,
-      require              => Class['kubeadm::configure']
     }
   }
 
