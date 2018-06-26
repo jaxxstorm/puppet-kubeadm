@@ -18,8 +18,9 @@ class kubeadm::configure(
     recurse => $purge,
   }
   -> file { 'kubeadm config.json':
-    ensure  => present,
-    path    => "${::kubeadm::config_dir}/config.json",
-    content => kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
+    ensure    => present,
+    path      => "${::kubeadm::config_dir}/config.json",
+    content   => kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
+    show_diff => false
   }
 }
