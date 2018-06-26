@@ -102,6 +102,7 @@ class kubeadm (
     -> class {'::kubeadm::master':
       refresh_controlplane => $refresh_controlplane,
     }
+  contain ::kubeadm::master
   }
 
   unless $master{
@@ -114,6 +115,5 @@ class kubeadm (
   contain ::kubeadm::install
   contain ::kubeadm::configure
   contain ::kubeadm::service
-  contain ::kubeadm::master
 
 }
