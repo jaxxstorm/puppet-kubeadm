@@ -6,7 +6,7 @@ class kubeadm::master (
   $refresh_controlplane,
 ){
 
-  $subscribe = $refresh_controlplane ? {
+  $subscribe = ($::kubeadm_bootstrapped and $refresh_controlplane )? {
     true    => File['kubeadm config.json'],
     default => undef,
   }
