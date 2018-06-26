@@ -6,6 +6,25 @@ class kubeadm::master (
   $refresh_controlplane,
 ){
 
+  $subscribe = $refresh_controlplane ? {
+    true    => File['kubeadm config.json'],
+    default => undef,
+  }
+  # if we are a master, install the components we need to update the controlplane
+  # every time the config file changes
+  $refresh_controplane = "kubeadm alpha phase controlplane all --config ${::kubeadm::config_dir}/config.json && sleep 10"
+  exec { 'kubeadm controlplane':
+    command     => $refresh_controplane,
+    path        => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
+    subscribe   => $subscribe,
+    refreshonly => true,
+  }
+  ~> exec { 'kubeadm kubeconfig':
+    command     => "kubeadm alpha phase kubeconfig all --config ${kubeadm::config_dir}/config.json",
+    path        => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
+    refreshonly => true,
+  }
+
   exec{'kubeadm init':
     command => "kubeadm init --config ${::kubeadm::config_dir}/config.json",
     path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',

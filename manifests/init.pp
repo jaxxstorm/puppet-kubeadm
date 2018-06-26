@@ -95,15 +95,13 @@ class kubeadm (
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
   }
-  ~> class {'::kubeadm::service': }
+  -> class {'::kubeadm::service': }
 
   if $master {
     class {'::kubeadm::master':
       refresh_controlplane => $refresh_controlplane,
+      require              => Class['kubeadm::configure']
     }
-
-    Class['kubeadm::service']
-    -> Class['kubeadm::master']
   }
 
   unless $master{
