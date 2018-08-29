@@ -108,7 +108,7 @@ class kubeadm (
   }
 
   unless $master{
-    class{'::kubadm::node':
+    class{'::kubeadm::node':
       ignore_preflight_errors => $ignore_preflight_errors,
     }
     contain ::kubeadm::node
