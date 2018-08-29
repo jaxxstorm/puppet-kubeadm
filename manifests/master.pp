@@ -3,7 +3,8 @@
 # @summary This manages and configures kubernetes masters with kubeadm
 #
 class kubeadm::master (
-  $refresh_controlplane,
+  Boolean $refresh_controlplane,
+  Optional[Array] $ignore_preflight_errors,
 ){
 
   $subscribe = ($::kubeadm_bootstrapped and $refresh_controlplane )? {
@@ -26,8 +27,13 @@ class kubeadm::master (
     refreshonly => true,
   }
 
+  $flags = kubeadm_flags({
+    config                  => "${::kubeadm::config_dir}/config.json",
+    ignore_preflight_errors => $ignore_preflight_errors,
+  })
+
   exec{'kubeadm init':
-    command => "kubeadm init --config ${::kubeadm::config_dir}/config.json",
+    command => "kubeadm init ${flags}",
     path    => '/usr/bin:/usr/local/bin:/usr/sbin:/sbin',
     creates => '/etc/kubernetes/kubelet.conf',
   }

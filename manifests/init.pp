@@ -57,27 +57,28 @@
 # Copyright 2018 Lee Briggs, unless otherwise noted.
 #
 class kubeadm (
-  $bootstrap_master               = undef, # required parameter
-  $config_dir                     = $kubeadm::params::config_dir,
-  Hash $config_defaults           = $kubeadm::params::config_defaults,
-  Hash $config_hash               = $kubeadm::params::config_hash,
-  $kubectl_package_name           = $kubeadm::params::kubectl_package_name,
-  $kubelet_package_name           = $kubeadm::params::kubelet_package_name,
-  $kubectl_package_ensure         = $kubeadm::params::kubectl_package_ensure,
-  $kubelet_package_ensure         = $kubeadm::params::kubelet_package_ensure,
-  Boolean $kubelet_service_enable = $kubeadm::params::kubelet_service_enable,
-  $kubelet_service_ensure         = $kubeadm::params::kubelet_service_ensure,
-  $kubelet_service_name           = $kubeadm::params::kubelet_service_name,
-  Boolean $manage_kubectl         = $kubeadm::params::manage_kubectl,
-  Boolean $manage_kubelet         = $kubeadm::params::manage_kubelet,
-  Boolean $manage_repos           = $kubeadm::params::manage_repos,
-  Boolean $master                 = $kubeadm::params::master,
-  $package_ensure                 = $kubeadm::params::package_ensure,
-  $package_name                   = $kubeadm::params::package_name,
-  Boolean $pretty_config          = $kubeadm::params::pretty_config,
-  Integer $pretty_config_indent   = $kubeadm::params::pretty_config_indent,
-  Boolean $purge_config_dir       = $kubeadm::params::purge_config_dir,
-  Boolean $refresh_controlplane   = $kubeadm::params::refresh_controlplane,
+  $bootstrap_master                        = undef, # required parameter
+  $config_dir                              = $kubeadm::params::config_dir,
+  Hash $config_defaults                    = $kubeadm::params::config_defaults,
+  Hash $config_hash                        = $kubeadm::params::config_hash,
+  $kubectl_package_name                    = $kubeadm::params::kubectl_package_name,
+  $kubelet_package_name                    = $kubeadm::params::kubelet_package_name,
+  $kubectl_package_ensure                  = $kubeadm::params::kubectl_package_ensure,
+  $kubelet_package_ensure                  = $kubeadm::params::kubelet_package_ensure,
+  Boolean $kubelet_service_enable          = $kubeadm::params::kubelet_service_enable,
+  $kubelet_service_ensure                  = $kubeadm::params::kubelet_service_ensure,
+  $kubelet_service_name                    = $kubeadm::params::kubelet_service_name,
+  Boolean $manage_kubectl                  = $kubeadm::params::manage_kubectl,
+  Boolean $manage_kubelet                  = $kubeadm::params::manage_kubelet,
+  Boolean $manage_repos                    = $kubeadm::params::manage_repos,
+  Boolean $master                          = $kubeadm::params::master,
+  $package_ensure                          = $kubeadm::params::package_ensure,
+  $package_name                            = $kubeadm::params::package_name,
+  Boolean $pretty_config                   = $kubeadm::params::pretty_config,
+  Integer $pretty_config_indent            = $kubeadm::params::pretty_config_indent,
+  Boolean $purge_config_dir                = $kubeadm::params::purge_config_dir,
+  Boolean $refresh_controlplane            = $kubeadm::params::refresh_controlplane,
+  Optional[Array] $ignore_preflight_errors = []
 ) inherits kubeadm::params {
 
   if !$bootstrap_master {
@@ -100,12 +101,16 @@ class kubeadm (
   if $master {
     Class['::kubeadm::service']
     -> class {'::kubeadm::master':
-      refresh_controlplane => $refresh_controlplane,
+      ignore_preflight_errors => $ignore_preflight_errors,
+      refresh_controlplane    => $refresh_controlplane,
     }
     contain ::kubeadm::master
   }
 
   unless $master{
+    class{'::kubadm::node':
+      ignore_preflight_errors => $ignore_preflight_errors,
+    }
     contain ::kubeadm::node
     Class['kubeadm::service']
     -> Class['kubeadm::node']
