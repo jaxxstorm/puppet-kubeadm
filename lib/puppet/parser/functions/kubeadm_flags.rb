@@ -4,7 +4,7 @@ module Puppet::Parser::Functions
     opts = args[0] || {}
     flags = []
     flags << "--config '#{opts['config']}'" if opts['config'].to_s != 'undef'
-    flags << "--ignore-preflight-errors='#{opts['ignore_preflight_errors'].join(',')}'" if opts['ignore_preflight_errors'].to_s != 'undef'
+    flags << "--ignore-preflight-errors='#{opts['ignore_preflight_errors'].join(',')}'" if opts['ignore_preflight_errors'].size > 0
 
     flags.flatten.join(' ')
   end
