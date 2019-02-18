@@ -76,6 +76,7 @@ class kubeadm (
   Boolean $pretty_config                   = $kubeadm::params::pretty_config,
   Integer $pretty_config_indent            = $kubeadm::params::pretty_config_indent,
   Boolean $purge_config_dir                = $kubeadm::params::purge_config_dir,
+  Boolean $replace_kubadm_config           = $kubeadm::params::replace_kubadm_config,
   Boolean $refresh_controlplane            = $kubeadm::params::refresh_controlplane,
   Optional[Array] $ignore_preflight_errors = []
 ) inherits kubeadm::params {
@@ -90,6 +91,7 @@ class kubeadm (
   -> class {'::kubeadm::configure':
     config_hash => $config_hash_real,
     purge       => $purge_config_dir,
+    replace     => $replace_kubadm_config,
   }
   -> class {'::kubeadm::service': }
 

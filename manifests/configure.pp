@@ -10,7 +10,8 @@
 #
 class kubeadm::configure(
   $config_hash,
-  $purge = true,
+  $purge   = true,
+  $replace = true,
 ) {
   file {$::kubeadm::config_dir:
     ensure  => directory,
@@ -19,6 +20,7 @@ class kubeadm::configure(
   }
   -> file { 'kubeadm config.json':
     ensure    => present,
+    replace   => $replace,
     path      => "${::kubeadm::config_dir}/config.json",
     content   => kubeadm_sorted_json($config_hash, $::kubeadm::pretty_config, $::kubeadm::pretty_config_indent),
     show_diff => false
