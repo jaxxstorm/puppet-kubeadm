@@ -24,5 +24,6 @@ class kubeadm::params {
   $pretty_config_indent   = 4
   $purge_config_dir       = true
   $replace_kubeadm_config = true
+  $kubeadm_config_ensure  = 'present'
   $refresh_controlplane   = true
 }
